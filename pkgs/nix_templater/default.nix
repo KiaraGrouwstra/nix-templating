@@ -1,6 +1,6 @@
 { writeShellApplication, python3 }:
 writeShellApplication {
-  name = "text_templater";
+  name = "nix_templater";
   runtimeInputs = [
     python3
   ];
