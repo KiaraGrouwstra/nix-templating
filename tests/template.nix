@@ -8,7 +8,7 @@ in (nixpkgs.lib.nixos.runTest {
     hostPkgs = nixpkgs.legacyPackages.${system};
     name = "nix_templates";
 
-    nodes.machine = {config, pkgs, ...}: {
+    nodes.machine = {pkgs, ...}: {
       config = {
         systemd.services.testservice = {
           wantedBy = [ "multi-user.target" ];
