@@ -33,7 +33,7 @@ in (nixpkgs.lib.nixos.runTest {
     testScript = ''
       start_all()
       print(machine.execute("uname -a"))
-      machine.wait_for_unit("testservice.service")
-      print(machine.succeed("cat /root/test | grep -q secret"))
+      machine.wait_for_unit("multi-user.target")
+      print(machine.succeed("cat /test | grep -q secret"))
     '';
   })
