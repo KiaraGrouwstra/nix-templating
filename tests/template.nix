@@ -1,3 +1,4 @@
+# test injecting a secret into a template
 { legacyPackages, system, nixpkgs }:
 let
   # this file would usually be outside of the store
@@ -7,7 +8,7 @@ in (nixpkgs.lib.nixos.runTest {
     hostPkgs = nixpkgs.legacyPackages.${system};
     name = "nix_templates";
 
-    nodes.machine = {config, pkgs, ...}: {
+    nodes.machine = {pkgs, ...}: {
       config = {
         systemd.services.testservice = {
           wantedBy = [ "multi-user.target" ];
@@ -33,7 +34,7 @@ in (nixpkgs.lib.nixos.runTest {
     testScript = ''
       start_all()
       print(machine.execute("uname -a"))
-      machine.wait_for_unit("testservice.service")
-      print(machine.succeed("cat /root/test | grep -q secret"))
+      machine.wait_for_unit("multi-user.target")
+      print(machine.succeed("cat /test | grep -q secret"))
     '';
   })
