@@ -1,10 +1,12 @@
 { pkgs, nix_templater }:
 rec {
+  # placeholder to be substituted with the content of a secret file
   fileContents = file: {
    outPath = "<${builtins.placeholder "nix_template"}${toString file}${builtins.placeholder "nix_template"}>";
    file = file;
   };
 
+  # make a template with placeholders
   template_text = { name, text, outPath }:
     pkgs.runCommand name {
       textBeforeTemplate = text;

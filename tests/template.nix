@@ -1,3 +1,4 @@
+# test injecting a secret into a template
 { legacyPackages, system, nixpkgs }:
 let
   # this file would usually be outside of the store

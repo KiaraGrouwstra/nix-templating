@@ -1,3 +1,4 @@
+# replace occurrences of a magic string in a template file
 import sys
 from pathlib import Path
 
