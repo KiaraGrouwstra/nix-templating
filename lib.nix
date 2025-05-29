@@ -1,5 +1,9 @@
-{ pkgs, nix_templater }:
 {
+  pkgs,
+  nix_templater,
+  lib ? pkgs.lib,
+}:
+rec {
   # placeholder to be substituted with the content of a secret file
   fileContents = file: {
    outPath = "<${builtins.placeholder "nix_template"}${toString file}${builtins.placeholder "nix_template"}>";
@@ -21,4 +25,13 @@
       cp $scriptPath $out/bin/${name}
       chmod +x $out/bin/${name}
     '';
+
+  template_generator = generator: { name, value, outPath }: template_text {
+    inherit name outPath;
+    text = generator value;
+  };
+
+  template_json = options: template_generator (lib.generators.toJSON options);
+  template_yaml = options: template_generator (lib.generators.toYAML options); # just json
+  template_ini = options: template_generator (lib.generators.toINI options);
 }
