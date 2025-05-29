@@ -1,8 +1,6 @@
-# test injecting a secret into a text template
+# test injecting a secret into a json template
 { legacyPackages, system, nixpkgs }:
 let
-  # this file would usually be outside of the store
-  # but in this test it isn't, because setting it up in other ways is hard :)
   secret_file = (nixpkgs.legacyPackages.${system}.writeText "secret" "secret");
 in (nixpkgs.lib.nixos.runTest {
     hostPkgs = nixpkgs.legacyPackages.${system};
@@ -14,12 +12,12 @@ in (nixpkgs.lib.nixos.runTest {
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
             Type = "oneshot";
-            ExecStartPre = "${legacyPackages.${system}.template_text {
+            ExecStartPre = "${legacyPackages.${system}.template_json {} {
               name = "test";
-              text = ''
-              public text
-              ${legacyPackages.${system}.fileContents secret_file}
-              '';
+              value = {
+                foo = "text";
+                bar = legacyPackages.${system}.fileContents secret_file;
+              };
               outPath = "./test";
             }}/bin/test";
             ExecStart = pkgs.writeScript "test_file_got_templates" ''
