@@ -1,4 +1,10 @@
 { pkgs, lib, nix_templater }:
+let
+  escapeJson = {
+    "\"" = ''\"'';
+    "\\" = ''\\'';
+  };
+in
 rec {
   # placeholder to be substituted with the content of a secret file
   fileContents = file: {
@@ -7,12 +13,12 @@ rec {
   };
 
   # make a template with placeholders
-  templateText = { name, text, outPath }:
+  templateText = { name, text, outPath, translations ? {} }:
     pkgs.runCommand name {
       textBeforeTemplate = text;
       script = ''
         #!/bin/sh
-        ${nix_templater}/bin/nix_templater ${builtins.placeholder "out"}/template ${builtins.placeholder "nix_template"} "${outPath}"
+        ${nix_templater}/bin/nix_templater ${builtins.placeholder "out"}/template ${builtins.placeholder "nix_template"} "${outPath}" '${lib.strings.toJSON translations}'
       '';
       passAsFile = [ "script" "textBeforeTemplate" ];
     } ''
@@ -22,14 +28,14 @@ rec {
       chmod +x $out/bin/${name}
     '';
 
-  templateGenerator = generator: { name, value, outPath }: templateText {
-    inherit name outPath;
+  templateGenerator = translations: generator: { name, value, outPath }: templateText {
+    inherit name outPath translations;
     text = generator value;
   };
 
-  templateJsonWith = options: templateGenerator (lib.generators.toJSON options);
-  templateYamlWith = options: templateGenerator (lib.generators.toYAML options); # just json
-  templateIniWith = options: templateGenerator (lib.generators.toINI options);
+  templateJsonWith = options: templateGenerator escapeJson (lib.generators.toJSON options);
+  templateYamlWith = options: templateGenerator escapeJson (lib.generators.toYAML options); # just json
+  templateIniWith = options: templateGenerator escapeJson (lib.generators.toINI options);
   templateJson = templateJsonWith { };
   templateYaml = templateYamlWith { };
   templateIni = templateIniWith { };
