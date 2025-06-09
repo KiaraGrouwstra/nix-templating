@@ -1,6 +1,6 @@
 {
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  outputs = { nixpkgs, ... }@self: let
+  outputs = { nixpkgs, ... }: let
     supportedArchitectures = [
       "aarch64-darwin"
       "aarch64-linux"

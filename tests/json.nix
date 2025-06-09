@@ -1,9 +1,10 @@
 # test injecting a secret into a json template
 { legacyPackages, system, nixpkgs }:
 let
-  secret_file = (nixpkgs.legacyPackages.${system}.writeText "secret" "secret");
+  hostPkgs = nixpkgs.legacyPackages.${system};
+  secret_file = hostPkgs.writeText "secret" "secret\\needing\"escaping";
 in (nixpkgs.lib.nixos.runTest {
-    hostPkgs = nixpkgs.legacyPackages.${system};
+    inherit hostPkgs;
     name = "nix_templates";
 
     nodes.machine = {pkgs, ...}: {
@@ -33,6 +34,8 @@ in (nixpkgs.lib.nixos.runTest {
       start_all()
       print(machine.execute("uname -a"))
       machine.wait_for_unit("multi-user.target")
+      print(machine.succeed("cat /test"))
       print(machine.succeed("cat /test | grep -q secret"))
+      print(machine.succeed("cat /test | ${hostPkgs.jq}/bin/jq"))
     '';
   })
