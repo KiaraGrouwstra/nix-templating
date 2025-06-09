@@ -1,10 +1,12 @@
 # replace occurrences of a magic string in a template file
+from json import loads
 import sys
 from pathlib import Path
 
 template_file = sys.argv[1]
 magic_string = sys.argv[2]
 outfile = sys.argv[3]
+translations = loads(sys.argv[4]) if len(sys.argv) >= 4 else {}
 
 if Path(outfile).exists():
     print(f"{outfile} already exists, aborting")
@@ -26,7 +28,7 @@ while True:
     ]
     output += template_bytes[loc : loc + magic_start]
     # TODO handle errors better here
-    output += Path(magic_file.decode()).read_bytes()
+    output += Path(magic_file.decode()).read_bytes().decode().translate(str.maketrans(translations)).encode()
     loc = loc + magic_start + magic_end + len(magic_string) + 1
 
 Path(outfile).write_bytes(output)
