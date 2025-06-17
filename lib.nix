@@ -30,4 +30,7 @@ rec {
   template_json = options: template_generator (lib.generators.toJSON options);
   template_yaml = options: template_generator (lib.generators.toYAML options); # just json
   template_ini = options: template_generator (lib.generators.toINI options);
+  template_json' = template_json { };
+  template_yaml' = template_yaml { };
+  template_ini' = template_ini { };
 }
