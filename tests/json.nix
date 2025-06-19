@@ -12,7 +12,7 @@ in (nixpkgs.lib.nixos.runTest {
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
             Type = "oneshot";
-            ExecStartPre = "${legacyPackages.${system}.template_json {} {
+            ExecStartPre = "${legacyPackages.${system}.templateJson {
               name = "test";
               value = {
                 foo = "text";
