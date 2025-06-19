@@ -11,7 +11,7 @@ rec {
   };
 
   # make a template with placeholders
-  template_text = { name, text, outPath }:
+  templateText = { name, text, outPath }:
     pkgs.runCommand name {
       textBeforeTemplate = text;
       script = ''
@@ -26,15 +26,15 @@ rec {
       chmod +x $out/bin/${name}
     '';
 
-  template_generator = generator: { name, value, outPath }: template_text {
+  templateGenerator = generator: { name, value, outPath }: templateText {
     inherit name outPath;
     text = generator value;
   };
 
-  template_json = options: template_generator (lib.generators.toJSON options);
-  template_yaml = options: template_generator (lib.generators.toYAML options); # just json
-  template_ini = options: template_generator (lib.generators.toINI options);
-  template_json' = template_json { };
-  template_yaml' = template_yaml { };
-  template_ini' = template_ini { };
+  templateJsonWith = options: templateGenerator (lib.generators.toJSON options);
+  templateYamlWith = options: templateGenerator (lib.generators.toYAML options); # just json
+  templateIniWith = options: templateGenerator (lib.generators.toINI options);
+  templateJson = templateJsonWith { };
+  templateYaml = templateYamlWith { };
+  templateIni = templateIniWith { };
 }
