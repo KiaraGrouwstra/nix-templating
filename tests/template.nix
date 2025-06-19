@@ -14,7 +14,7 @@ in (nixpkgs.lib.nixos.runTest {
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
             Type = "oneshot";
-            ExecStartPre = "${legacyPackages.${system}.template_text {
+            ExecStartPre = "${legacyPackages.${system}.templateText {
               name = "test";
               text = ''
               public text
