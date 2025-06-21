@@ -6,7 +6,7 @@ from pathlib import Path
 template_file = sys.argv[1]
 magic_string = sys.argv[2]
 outfile = sys.argv[3]
-translations = loads(sys.argv[4]) if len(sys.argv) >= 4 else {}
+translations = loads(sys.argv[4]) if len(sys.argv) >= 5 else {}
 
 if Path(outfile).exists():
     print(f"{outfile} already exists, aborting")
