@@ -1,4 +1,7 @@
-{ pkgs, nix_templater }:
+{
+  pkgs,
+  nix_templater ? pkgs.callPackage ./pkgs/nix_templater { },
+}:
 {
   # placeholder to be substituted with the content of a secret file
   fileContents = file: {
