@@ -21,6 +21,7 @@
     checks = nixpkgs.lib.genAttrs supportedArchitectures (system: {
       template = import ./tests/template.nix { inherit legacyPackages system nixpkgs; };
       json = import ./tests/json.nix { inherit legacyPackages system nixpkgs; };
+      toml = import ./tests/toml.nix { inherit legacyPackages system nixpkgs; };
     });
   };
 }
