@@ -1,7 +1,7 @@
 {
   pkgs,
-  nix_templater,
   lib ? pkgs.lib,
+  nix_templater ? pkgs.callPackage ./pkgs/nix_templater { },
 }:
 let
   escapeJson = {
