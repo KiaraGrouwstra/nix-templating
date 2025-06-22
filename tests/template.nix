@@ -17,14 +17,14 @@ in (nixpkgs.lib.nixos.runTest {
             ExecStartPre = "${legacyPackages.${system}.template_text {
               name = "test";
               text = ''
-              public text
-              ${legacyPackages.${system}.fileContents secret_file}
+                foo=${legacyPackages.${system}.fileContents secret_file}
               '';
               outPath = "./test";
             }}/bin/test";
+            environmentFile = "./test";
             ExecStart = pkgs.writeScript "test_file_got_templates" ''
               #!/bin/sh
-              cat ./test | grep -q 'secret'
+              env > ./env
             '';
           };
         };
@@ -35,6 +35,8 @@ in (nixpkgs.lib.nixos.runTest {
       start_all()
       print(machine.execute("uname -a"))
       machine.wait_for_unit("multi-user.target")
-      print(machine.succeed("cat /test | grep -q secret"))
+      print(machine.succeed("cat /test"))
+      print(machine.succeed("cat /env"))
+      print(machine.succeed("cat /env | grep -q secret"))
     '';
   })
