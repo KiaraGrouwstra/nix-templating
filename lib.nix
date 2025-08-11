@@ -7,7 +7,14 @@
   };
 
   # make a template with placeholders
-  template_text = { name, text, outPath }:
+  template_text = {
+    name,
+    text,
+    outPath,
+    owner ? "root",
+    group ? "",
+    mode ? "0400",
+  }:
     pkgs.runCommand name {
       textBeforeTemplate = text;
       script = ''
@@ -20,5 +27,7 @@
       cp $textBeforeTemplatePath $out/template
       cp $scriptPath $out/bin/${name}
       chmod +x $out/bin/${name}
+      chown ${owner}:${group} $out/bin/${name}
+      chmod ${mode} $out/bin/${name}
     '';
 }
