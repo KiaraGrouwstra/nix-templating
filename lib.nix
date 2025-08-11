@@ -22,7 +22,7 @@ rec {
     text,
     outPath,
     owner ? "root",
-    group ? "",
+    group ? owner,
     mode ? "0400",
     translations ? {},
   }:
@@ -31,24 +31,34 @@ rec {
       script = ''
         #!/bin/sh
         ${nix_templater}/bin/nix_templater ${builtins.placeholder "out"}/template ${builtins.placeholder "nix_template"} "${outPath}" '${lib.strings.toJSON translations}'
+        chown ${owner}:${group} "${outPath}"
+        chmod ${mode} "${outPath}"
       '';
       passAsFile = [ "script" "textBeforeTemplate" ];
     } ''
       mkdir -p $out/bin
       cp $textBeforeTemplatePath $out/template
       cp $scriptPath $out/bin/${name}
-      chown ${owner}:${group} $out/bin/${name}
-      chmod ${mode} $out/bin/${name}
       chmod +x $out/bin/${name}
     '';
 
   # make a template with placeholders from a file
-  templateFromFile = { name, templateFile, outPath, translations ? {} }:
+  templateFromFile = {
+    name,
+    templateFile,
+    outPath,
+    owner ? "root",
+    group ? owner,
+    mode ? "0400",
+    translations ? {},
+  }:
     pkgs.runCommand name {
       inherit templateFile;
       script = ''
         #!/bin/sh
         ${nix_templater}/bin/nix_templater ${builtins.placeholder "out"}/template ${builtins.placeholder "nix_template"} "${outPath}" '${lib.strings.toJSON translations}'
+        chown ${owner}:${group} "${outPath}"
+        chmod ${mode} "${outPath}"
       '';
       passAsFile = [ "script" ];
     } ''
