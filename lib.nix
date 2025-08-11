@@ -12,7 +12,7 @@
     text,
     outPath,
     owner ? "root",
-    group ? "",
+    group ? owner,
     mode ? "0400",
   }:
     pkgs.runCommand name {
@@ -20,6 +20,8 @@
       script = ''
         #!/bin/sh
         ${nix_templater}/bin/nix_templater ${builtins.placeholder "out"}/template ${builtins.placeholder "nix_template"} "${outPath}"
+        chown ${owner}:${group} "${outPath}"
+        chmod ${mode} "${outPath}"
       '';
       passAsFile = [ "script" "textBeforeTemplate" ];
     } ''
@@ -27,7 +29,5 @@
       cp $textBeforeTemplatePath $out/template
       cp $scriptPath $out/bin/${name}
       chmod +x $out/bin/${name}
-      chown ${owner}:${group} $out/bin/${name}
-      chmod ${mode} $out/bin/${name}
     '';
 }
