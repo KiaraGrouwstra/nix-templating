@@ -37,9 +37,9 @@ rec {
       mkdir -p $out/bin
       cp $textBeforeTemplatePath $out/template
       cp $scriptPath $out/bin/${name}
-      chmod +x $out/bin/${name}
       chown ${owner}:${group} $out/bin/${name}
       chmod ${mode} $out/bin/${name}
+      chmod +x $out/bin/${name}
     '';
 
   # make a template with placeholders from a file
