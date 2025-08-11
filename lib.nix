@@ -17,7 +17,15 @@ rec {
   };
 
   # make a template with placeholders from a text
-  templateText = { name, text, outPath, translations ? {} }:
+  templateText = {
+    name,
+    text,
+    outPath,
+    owner ? "root",
+    group ? "",
+    mode ? "0400",
+    translations ? {},
+  }:
     pkgs.runCommand name {
       textBeforeTemplate = text;
       script = ''
@@ -30,6 +38,8 @@ rec {
       cp $textBeforeTemplatePath $out/template
       cp $scriptPath $out/bin/${name}
       chmod +x $out/bin/${name}
+      chown ${owner}:${group} $out/bin/${name}
+      chmod ${mode} $out/bin/${name}
     '';
 
   # make a template with placeholders from a file
